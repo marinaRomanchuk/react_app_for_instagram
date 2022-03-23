@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from "axios";
-import {toast} from "react-toastify";
+
 
 class SignUp extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ class SignUp extends Component {
             username: this.state.username,
             password: this.state.password
         };
-        axios.post(`http://127.0.0.1:8000/api/signup/`, userData)
+        axios.post(`api/signup/`, userData)
                 .then((result) => {
                     console.log(result.data);
                     alert("Account created successfully!");
@@ -98,7 +98,7 @@ class SignUp extends Component {
                 </ul>
 
                 <h1>Sign up to New Instagram</h1>
-                <form method="post" onSubmit = {this.handleSubmit}>
+                <form method="post" onSubmit={e => this.props.handle_signup(e, this.state)}>
                     <fieldset>
                         <div className="form-group">
                             <fieldset>
@@ -145,5 +145,6 @@ class SignUp extends Component {
         );
     }
 }
+
 
 export default SignUp;
