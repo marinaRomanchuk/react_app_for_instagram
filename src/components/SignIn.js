@@ -1,9 +1,10 @@
 import React, {Component, useState} from 'react';
 import axios from "axios";
 import PropTypes from 'prop-types';
+import {TOKEN_API} from './PathList';
 
 async function loginUser(credentials) {
-    return axios.post(`api/token/`, credentials)
+    return axios.post(TOKEN_API, credentials)
         .then(result => result.data)
         .catch((error) => {
             console.log(error.response);

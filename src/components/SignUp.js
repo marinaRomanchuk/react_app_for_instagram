@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from "axios";
+import {SIGNUP_API} from './PathList';
 
 
 class SignUp extends Component {
@@ -18,7 +19,7 @@ class SignUp extends Component {
             username: this.state.username,
             password: this.state.password
         };
-        axios.post(`api/signup/`, userData)
+        axios.post(SIGNUP_API, userData)
                 .then((result) => {
                     console.log(result.data);
                     alert("Account created successfully!");
@@ -98,7 +99,7 @@ class SignUp extends Component {
                 </ul>
 
                 <h1>Sign up to New Instagram</h1>
-                <form method="post" onSubmit={e => this.props.handle_signup(e, this.state)}>
+                <form method="post" onSubmit={this.handleSubmit}>
                     <fieldset>
                         <div className="form-group">
                             <fieldset>

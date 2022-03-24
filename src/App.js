@@ -8,8 +8,6 @@ import Search from './components/Search';
 import useToken from './components/useToken';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import "./bootstrap.css";
-import axios from "axios";
-axios.defaults.baseURL = "http://127.0.0.1:8000";
 
 
 function App() {
