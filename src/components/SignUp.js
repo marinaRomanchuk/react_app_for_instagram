@@ -19,7 +19,7 @@ class SignUp extends Component {
             username: this.state.username,
             password: this.state.password
         };
-        axios.post(API_DOMAIN + "/api/signup/", userData)
+        axios.post("http://" + API_DOMAIN + "/api/signup/", userData)
                 .then((result) => {
                     console.log(result.data);
                     alert("Account created successfully!");
