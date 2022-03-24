@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from "axios";
-import {SIGNUP_API} from './PathList';
+import {API_DOMAIN} from './PathList';
 
 
 class SignUp extends Component {
@@ -19,7 +19,7 @@ class SignUp extends Component {
             username: this.state.username,
             password: this.state.password
         };
-        axios.post(SIGNUP_API, userData)
+        axios.post(API_DOMAIN + "/api/signup/", userData)
                 .then((result) => {
                     console.log(result.data);
                     alert("Account created successfully!");
