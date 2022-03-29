@@ -3,12 +3,13 @@ import {API_DOMAIN} from './PathList';
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
 import useToken from "./useToken";
-import {Image} from "react-bootstrap";
 import like_empty from '../like_empty.png';
 import like_full  from '../like_full.png';
 import dislike_full  from '../dislike_full.png';
 import dislike_empty  from '../dislike_empty.png';
-import comment  from '../comment.png';
+import comment_empty  from '../comment.png';
+import comment_full  from '../comment_full.png';
+
 
 async function getListOfPosts(token) {
     const AuthStr = 'Token '.concat(token);
@@ -22,6 +23,15 @@ async function getListOfComments(token, post_id) {
     return axios.get("http://" + API_DOMAIN + "/api/comments/", { headers: { Authorization: AuthStr }, params: { post_id: post_id,}
     })
         .then(result => result.data);
+}
+
+function postComment(token, credentials) {
+    const AuthStr = 'Token '.concat(token);
+    return axios.post("http://" + API_DOMAIN + "/api/comments/", credentials, {
+        headers: {Authorization: AuthStr}
+    }).catch((error) => {
+        console.log(error.response);
+    });
 }
 
 function postLike(token, post_id, is_like) {
@@ -151,6 +161,20 @@ function Feed(props) {
         setPostList({postList: newPostList});
     }
 
+    const handleSubmit = async (e, post_id, ind) => {
+        e.preventDefault();
+
+        await postComment(token,{
+            text: e.target.text.value,
+            post: post_id
+        });
+
+        const newPostList = postList.postList;
+        const comments = await getListOfComments(token, post_id);
+        newPostList[ind].comments = comments;
+        setPostList({postList: newPostList});
+    }
+
     return (
         <div>
             {loading && <div>Loading</div>}
@@ -163,21 +187,33 @@ function Feed(props) {
                                  <img src={ "http://" + API_DOMAIN + item.photo } width={600}></img>
                                  <h3>{item.description}</h3>
                                  <button className="btn btn-secondary" onClick={() => clickLike(item.id, index)}>
-                                     <img src={item.like ? like_full : like_empty} alt='like' width={25}/>{item.likes_count}
+                                     <img src={item.like ? like_full : like_empty} alt='like' width={25}/>
+                                     {item.likes_count}
                                  </button>
                                  <button className="btn btn-secondary" onClick={() => clickDislike(item.id, index)}>
-                                     <img src={item.dislike ? dislike_full : dislike_empty} alt='dislike' width={25}/>{item.dislikes_count}
+                                     <img src={item.dislike ? dislike_full : dislike_empty} alt='dislike' width={25}/>
+                                     {item.dislikes_count}
                                  </button>
-                                 <button className="btn btn-secondary" onClick={() => clickComments(index)}><img src={comment} alt='comment' width={25}/>
+                                 <button className="btn btn-secondary" onClick={() => clickComments(index)}>
+                                     <img src={item.show_comments ? comment_full : comment_empty}
+                                          alt='comment' width={25}/>
                                  </button>
                                  { item.show_comments ? item.comments.map(comment => (
                                      <div class="list-group-item list-group-item-action">{comment.text}
                                      </div>
                                  )) : <div></div>}
-                                 {/*{ item.comments.map(comment => (*/}
-                                 {/*    <div class="list-group-item list-group-item-action">{comment.text}*/}
-                                 {/*    </div>*/}
-                                 {/*))}*/}
+                                 <div className="list-group-item list-group-item-action">
+                                     <form method="post"
+                                           onSubmit={(e) => handleSubmit(e, item.id, index)}>
+                                         <div className="form-group">
+                                             <fieldset>
+                                                 <input className="form-control" type="text" name="text"
+                                                        placeholder="Leave your comment" required="required"/>
+                                                 <button type="submit" className="btn btn-outline-dark">Send</button>
+                                             </fieldset>
+                                         </div>
+                                     </form>
+                                 </div>
                              </div>
                          ))}
                         </center>
