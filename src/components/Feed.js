@@ -97,7 +97,7 @@ function Feed(props) {
             for (let item of posts) {
                 const likes = await getLikesCount(AuthStr, item.id);
                 const comments = await getListOfComments(AuthStr, item.id);
-                const user = await getUser(AuthStr, item.user);
+                const user = await getUser(AuthStr, item.user_id);
 
                 posts[ind].user = user;
                 posts[ind].likes_count = likes.likes_count;
