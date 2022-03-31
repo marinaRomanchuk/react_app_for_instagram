@@ -102,8 +102,8 @@ function Feed(props) {
                 posts[ind].user = user;
                 posts[ind].likes_count = likes.likes_count;
                 posts[ind].dislikes_count = likes.dislike_count;
-                posts[ind].like = likes.like;
-                posts[ind].dislike = likes.dislike;
+                posts[ind].has_liked = likes.has_liked;
+                posts[ind].has_disliked = likes.has_disliked;
                 posts[ind].comments = comments;
                 posts[ind].show_comments = false;
                 ind = ind + 1;
@@ -117,19 +117,19 @@ function Feed(props) {
     const clickLike = (post_id, ind) => {
         const newPostList = postList.postList;
 
-        if (newPostList[ind].like) {
+        if (newPostList[ind].has_liked) {
             deleteLike(AuthStr, post_id, 1);
-            newPostList[ind].like = false;
+            newPostList[ind].has_liked = false;
             newPostList[ind].likes_count -= 1;
         }
         else {
-            if (newPostList[ind].dislike) {
+            if (newPostList[ind].has_disliked) {
                 deleteLike(AuthStr, post_id, 0);
                 newPostList[ind].dislikes_count -= 1;
-                newPostList[ind].dislike = false;
+                newPostList[ind].has_disliked = false;
             }
             postLike(AuthStr, post_id, 1);
-            newPostList[ind].like = true;
+            newPostList[ind].has_liked = true;
             newPostList[ind].likes_count += 1;
         }
 
@@ -139,19 +139,19 @@ function Feed(props) {
     const clickDislike = (post_id, ind) => {
         const newPostList = postList.postList;
 
-        if (newPostList[ind].dislike) {
+        if (newPostList[ind].has_disliked) {
             deleteLike(AuthStr, post_id, 0);
-            newPostList[ind].dislike = false;
+            newPostList[ind].has_disliked = false;
             newPostList[ind].dislikes_count -= 1;
         }
         else {
-            if (newPostList[ind].like) {
+            if (newPostList[ind].has_liked) {
                 deleteLike(AuthStr, post_id, 1);
-                newPostList[ind].like = false;
+                newPostList[ind].has_liked = false;
                 newPostList[ind].likes_count -= 1;
             }
             postLike(AuthStr, post_id, 0);
-            newPostList[ind].dislike = true;
+            newPostList[ind].has_disliked = true;
             newPostList[ind].dislikes_count += 1;
         }
 
@@ -184,48 +184,46 @@ function Feed(props) {
             {!loading && (
                 <div class="list-group">
                     <h2> Welcome to your feed!</h2>
-                         { postList.postList.map((item, index) => (
-                             <div class="list-group-item list-group-item-action flex-column align-items-start">
-                                 <div>
-                                     <img src={item.user.profile_photo } width={40} style={{display:"inline-block"}}>
-                                     </img>
-                                     <h4 style={{display:"inline-block"}}>{ item.user.username }</h4>
-                                 </div>
-                                 <center>
-                                 <img src={ "http://" + API_DOMAIN + item.photo } width={600}></img>
-                                 <h3>{item.description}</h3>
-                                 <button className="btn btn-secondary" onClick={() => clickLike(item.id, index)}>
-                                     <img src={item.like ? like_full : like_empty} alt='like' width={25}/>
-                                     {item.likes_count}
-                                 </button>
-                                 <button className="btn btn-secondary" onClick={() => clickDislike(item.id, index)}>
-                                     <img src={item.dislike ? dislike_full : dislike_empty} alt='dislike' width={25}/>
-                                     {item.dislikes_count}
-                                 </button>
-                                 <button className="btn btn-secondary" onClick={() => clickComments(index)}>
-                                     <img src={item.show_comments ? comment_full : comment_empty}
-                                          alt='comment' width={25}/>
-                                 </button>
-                                 </center>
-                                 { item.show_comments ? item.comments.map(comment => (
-                                     <div class="list-group-item list-group-item-action">{comment.text}
-                                     </div>
-                                 )) : <div></div>}
-                                 <div className="list-group-item list-group-item-action">
-                                     <form method="post"
-                                           onSubmit={(e) => handleSubmit(e, item.id, index)}>
-                                         <div className="form-group">
-                                             <input className="form-control" type="text" name="text"
-                                                    placeholder="Leave your comment" required="required"/>
-                                             <br></br>
-                                             <button type="submit" className="btn btn-outline-dark">Send</button>
-                                         </div>
-                                     </form>
-                                 </div>
+                     { postList.postList.map((item, index) => (
+                         <div class="list-group-item list-group-item-action flex-column align-items-start">
+                             <div>
+                                 <img src={item.user.profile_photo } width={40} style={{display:"inline-block"}}>
+                                 </img>
+                                 <h4 style={{display:"inline-block"}}>{ item.user.username }</h4>
                              </div>
-                         ))}
-
-
+                             <center>
+                             <img src={ "http://" + API_DOMAIN + item.photo } width={600}></img>
+                             <h3>{item.description}</h3>
+                             <button className="btn btn-secondary" onClick={() => clickLike(item.id, index)}>
+                                 <img src={item.has_liked ? like_full : like_empty} alt='like' width={25}/>
+                                 {item.likes_count}
+                             </button>
+                             <button className="btn btn-secondary" onClick={() => clickDislike(item.id, index)}>
+                                 <img src={item.has_disliked ? dislike_full : dislike_empty} alt='dislike' width={25}/>
+                                 {item.dislikes_count}
+                             </button>
+                             <button className="btn btn-secondary" onClick={() => clickComments(index)}>
+                                 <img src={item.show_comments ? comment_full : comment_empty}
+                                      alt='comment' width={25}/>
+                             </button>
+                             </center>
+                             { item.show_comments ? item.comments.map(comment => (
+                                 <div class="list-group-item list-group-item-action">{comment.text}
+                                 </div>
+                             )) : <div></div>}
+                             <div className="list-group-item list-group-item-action">
+                                 <form method="post"
+                                       onSubmit={(e) => handleSubmit(e, item.id, index)}>
+                                     <div className="form-group">
+                                         <input className="form-control" type="text" name="text"
+                                                placeholder="Leave your comment" required="required"/>
+                                         <br></br>
+                                         <button type="submit" className="btn btn-outline-dark">Send</button>
+                                     </div>
+                                 </form>
+                             </div>
+                         </div>
+                     ))}
                 </div>
             )}
         </div>
