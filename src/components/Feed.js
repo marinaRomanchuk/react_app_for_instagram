@@ -68,13 +68,6 @@ function deleteLike(authStr, postId, isLike) {
     }
 }
 
-async function getLikesCount(authStr, postId) {
-    const postStr = ''.concat(postId);
-    return axios.get("http://" + API_DOMAIN + "/api/posts/" + postStr + "/stats/",
-        { headers: { Authorization: authStr }})
-        .then(result => result.data);
-}
-
 function Feed(props) {
     const { token, setToken } = useToken();
     const [ postList, setPostList ] = useState([]);
@@ -85,18 +78,8 @@ function Feed(props) {
         const handleSome = async () => {
             setLoading(true);
             const posts = await getListOfPosts(authStr);
-
-            let index = 0;
             for (let post of posts) {
-                const likes = await getLikesCount(authStr, post.id);
-
-                posts[index].likesCount = likes.likes_count;
-                posts[index].dislikesCount = likes.dislikes_count;
-                posts[index].commentsCount = likes.comments_count;
-                posts[index].hasLiked = likes.has_liked;
-                posts[index].hasDisliked = likes.has_disliked;
-                posts[index].showComments = false;
-                index = index + 1;
+                post.showComments = false;
             }
             setPostList({postList: posts});
             setLoading(false);
@@ -107,20 +90,20 @@ function Feed(props) {
     const clickLike = (postId, index) => {
         const newPostList = postList.postList;
 
-        if (newPostList[index].hasLiked) {
+        if (newPostList[index].stats.has_liked) {
             deleteLike(authStr, postId, true);
-            newPostList[index].hasLiked = false;
-            newPostList[index].likesCount -= 1;
+            newPostList[index].stats.has_liked = false;
+            newPostList[index].stats.likes_count -= 1;
         }
         else {
-            if (newPostList[index].hasDisliked) {
+            if (newPostList[index].stats.has_disliked) {
                 deleteLike(authStr, postId, false);
-                newPostList[index].dislikesCount -= 1;
-                newPostList[index].hasDisliked = false;
+                newPostList[index].stats.dislikes_count -= 1;
+                newPostList[index].stats.has_disliked = false;
             }
             postLike(authStr, postId, true);
-            newPostList[index].hasLiked = true;
-            newPostList[index].likesCount += 1;
+            newPostList[index].stats.has_liked = true;
+            newPostList[index].stats.likes_count += 1;
         }
 
         setPostList({postList: newPostList});
@@ -129,20 +112,20 @@ function Feed(props) {
     const clickDislike = (postId, index) => {
         const newPostList = postList.postList;
 
-        if (newPostList[index].hasDisliked) {
+        if (newPostList[index].stats.has_disliked) {
             deleteLike(authStr, postId, false);
-            newPostList[index].hasDisliked = false;
-            newPostList[index].dislikesCount -= 1;
+            newPostList[index].stats.has_disliked = false;
+            newPostList[index].stats.dislikes_count -= 1;
         }
         else {
-            if (newPostList[index].hasLiked) {
+            if (newPostList[index].stats.has_liked) {
                 deleteLike(authStr, postId, true);
-                newPostList[index].hasLiked = false;
-                newPostList[index].likesCount -= 1;
+                newPostList[index].stats.has_liked = false;
+                newPostList[index].stats.likes_count -= 1;
             }
             postLike(authStr, postId, false);
-            newPostList[index].hasDisliked = true;
-            newPostList[index].dislikesCount += 1;
+            newPostList[index].stats.has_disliked = true;
+            newPostList[index].stats.dislikes_count += 1;
         }
 
         setPostList({postList: newPostList});
@@ -183,29 +166,31 @@ function Feed(props) {
                      { postList.postList.map((post, index) => (
                          <div class="list-group-item list-group-item-action flex-column align-items-start">
                              <div>
-                                 <img src={ post.user_info.profile_photo ? "http://" + API_DOMAIN +
-                                            post.user_info.profile_photo : logo } width={40}
+                                 <img src={ post.author.profile_photo ? post.author.profile_photo : logo } width={40}
                                       style={{display: "inline-block"}}>
                                  </img>
-                                 <h4 style={{display: "inline-block", margin: "5px"}}>{ post.user_info.username }</h4>
+                                 <h4 style={{display: "inline-block", margin: "5px"}}>{ post.author.username }</h4>
                              </div>
                              <center>
-                             <img src={ "http://" + API_DOMAIN + post.photo } width={600} alt={"image"}></img>
+                             <img src={ post.photo } width={600} alt={"image"}></img>
                              <h3>{post.description}</h3>
-                             <button className="btn btn-secondary" onClick={() => clickLike(post.id, index)}>
-                                 <img src={post.hasLiked ? likeFull : likeEmpty} alt='like' width={25}
+                             <button className="btn btn-secondary" onClick={() => clickLike(post.id, index)}
+                                     style={{margin: "3px", height: "50px"}}>
+                                 <img src={post.stats.has_liked ? likeFull : likeEmpty} alt='like' width={25}
                                       style={{margin: "3px"}}/>
-                                 {post.likesCount}
+                                 {post.stats.likes_count}
                              </button>
-                             <button className="btn btn-secondary" onClick={() => clickDislike(post.id, index)}>
-                                 <img src={post.hasDisliked ? dislikeFull : dislikeEmpty} alt='dislike' width={25}
+                             <button className="btn btn-secondary" onClick={() => clickDislike(post.id, index)}
+                                     style={{margin: "3px", height: "50px"}}>
+                                 <img src={post.stats.has_disliked ? dislikeFull : dislikeEmpty} alt='dislike' width={25}
                                       style={{margin: "3px"}}/>
-                                 {post.dislikesCount}
+                                 {post.stats.dislikes_count}
                              </button>
-                             <button className="btn btn-secondary" onClick={() => clickComments(index)}>
+                             <button className="btn btn-secondary" onClick={() => clickComments(index)}
+                                     style={{margin: "3px", height: "50px"}}>
                                  <img src={post.showComments ? commentFull : commentEmpty}
                                       alt='comment' width={25} style={{margin: "3px"}}/>
-                                 {post.commentsCount}
+                                 {post.stats.comments_count}
                              </button>
                              </center>
                              { post.showComments ? post.comments.map(comment => (
