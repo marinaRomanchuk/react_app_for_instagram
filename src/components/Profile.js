@@ -135,7 +135,10 @@ function Profile(props) {
     };
 
     const handleClosePostCreation = () => {
-        setProfileImage("");
+        setPost(prevState => ({
+            ...prevState,
+            ["photo"]: ""
+        }));
         setShowPostCreation(false);
     };
 
@@ -272,7 +275,6 @@ function Profile(props) {
     }
 
     const clickDeletePost = async (postId) => {
-        console.log(postId);
         await deletePost(authStr, postId);
         window.location.reload();
     }
@@ -300,10 +302,11 @@ function Profile(props) {
                 <div class="list-group" style={{maxWidth: "1000px", margin:"0 auto"}}>
                     <div>
                         <img src={ user.profile_photo ? user.profile_photo : logo } width={100} alt={"image"}
-                             style={{display: "inline-block", margin: "5px"}}></img>
+                             style={{display: "inline-block", margin: "5px"}}/>
                         <h2 style={{display: "inline-block", margin: "10px"}}>{ user.username }</h2>
                     </div>
                     <h3> { user.first_name + " " + user.last_name } </h3>
+                    <h4> { user.date_of_birth } </h4>
                     <h4> { user.description } </h4>
                     <div>
                         <button className="btn btn-secondary" onClick={handleShowInformationEditor}
@@ -392,7 +395,7 @@ function Profile(props) {
                                 </button>
                             </div>
                             <center>
-                                <img src={ post.photo } width={600} alt={"image"}></img>
+                                <img src={ post.photo } width={600} alt={"image"}/>
                                 <h3>{post.description}</h3>
                                 <button className="btn btn-secondary" onClick={() => clickLike(post.id, index)}
                                         style={{margin: "3px", height: "50px"}}>
