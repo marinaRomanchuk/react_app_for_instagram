@@ -152,7 +152,7 @@ function Feed(props) {
         const newPostList = postList.postList;
         const comments = await getListOfComments(authStr, newPostList[index].id);
         newPostList[index].comments = comments;
-        newPostList[index].commentsCount += 1;
+        newPostList[index].stats.comments_count += 1;
         setPostList({postList: newPostList});
         e.target.reset();
     }
