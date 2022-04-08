@@ -9,6 +9,7 @@ import dislikeFull  from '../dislike_full.png';
 import dislikeEmpty  from '../dislike_empty.png';
 import commentEmpty  from '../comment.png';
 import commentFull  from '../comment_full.png';
+import basket  from '../basket.png';
 import logo from '../inst_logo.png';
 import {Button, Modal} from "react-bootstrap";
 
@@ -86,6 +87,15 @@ function deleteLike(authStr, postId, isLike) {
             console.log(error.response);
         });
     }
+}
+
+function deletePost(authStr, postId) {
+    const postStr = ''.concat(postId);
+    return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postStr + "/",  {
+        headers: {Authorization: authStr}
+    }).catch((error) => {
+        console.log(error.response);
+    });
 }
 
 function Profile(props) {
@@ -261,6 +271,12 @@ function Profile(props) {
         setPostList({postList: newPostList});
     }
 
+    const clickDeletePost = async (postId) => {
+        console.log(postId);
+        await deletePost(authStr, postId);
+        window.location.reload();
+    }
+
     const handleSubmit = async (e, postId, index) => {
         e.preventDefault();
 
@@ -286,7 +302,6 @@ function Profile(props) {
                         <img src={ user.profile_photo ? user.profile_photo : logo } width={100} alt={"image"}
                              style={{display: "inline-block", margin: "5px"}}></img>
                         <h2 style={{display: "inline-block", margin: "10px"}}>{ user.username }</h2>
-
                     </div>
                     <h3> { user.first_name + " " + user.last_name } </h3>
                     <h4> { user.description } </h4>
@@ -366,11 +381,15 @@ function Profile(props) {
                     <br></br>
                     { postList.postList.map((post, index) => (
                         <div class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div>
+                            <div style={{display: "inline-block", width: "100%"}}>
                                 <img src={ post.author.profile_photo ? post.author.profile_photo : logo } width={40}
                                      style={{display: "inline-block"}}>
                                 </img>
                                 <h4 style={{display: "inline-block", margin: "5px"}}>{ post.author.username }</h4>
+                                <button className="btn btn-secondary" onClick={() => clickDeletePost(post.id)}
+                                        style={{height: "50px", position: "absolute", right: "0", margin: "3px"}}>
+                                    <img src={ basket } width={30}/>
+                                </button>
                             </div>
                             <center>
                                 <img src={ post.photo } width={600} alt={"image"}></img>
