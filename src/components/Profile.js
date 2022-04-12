@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {API_DOMAIN} from './PathList';
 import "bootstrap/dist/css/bootstrap.css";
-import axios from "axios";
 import useToken from "./useToken";
 import likeEmpty from '../like_empty.png';
 import likeFull  from '../like_full.png';
@@ -12,91 +11,10 @@ import commentFull  from '../comment_full.png';
 import basket  from '../basket.png';
 import logo from '../inst_logo.png';
 import {Button, Modal} from "react-bootstrap";
-
-
-async function getListOfPosts(authStr, userId) {
-    return axios.get("http://" + API_DOMAIN + "/api/posts/", { headers: { Authorization: authStr },
-        params: { user_id: userId,}})
-        .then(result => result.data);
-}
-
-async function getUserInfo(authStr) {
-    return axios.get("http://" + API_DOMAIN + "/api/users/me/", { headers: { Authorization: authStr }})
-        .then(result => result.data);
-}
-
-async function patchUserInfo(authStr, credentials) {
-    return axios.patch("http://" + API_DOMAIN + "/api/users/me/", credentials,
-        { headers: { Authorization: authStr }})
-        .then(result => result.data);
-}
-
-async function getListOfComments(authStr, postId) {
-    return axios.get("http://" + API_DOMAIN + "/api/comments/", { headers: { Authorization: authStr },
-        params: { post_id: postId,}})
-        .then(result => result.data);
-}
-
-function postComment(authStr, credentials) {
-    return axios.post("http://" + API_DOMAIN + "/api/comments/", credentials, {
-        headers: {Authorization: authStr}
-    }).catch((error) => {
-        console.log(error.response);
-    });
-}
-
-function postPost(authStr, credentials) {
-    return axios.post("http://" + API_DOMAIN + "/api/posts/create/", credentials, {
-        headers: {Authorization: authStr}
-    }).catch((error) => {
-        console.log(error.response);
-    });
-}
-
-function postLike(authStr, postId, isLike) {
-    const postStr = ''.concat(postId);
-    if (isLike) {
-        return axios.post("http://" + API_DOMAIN + "/api/posts/" + postStr + "/like/", {}, {
-            headers: {Authorization: authStr}
-        }).catch((error) => {
-            console.log(error.response);
-        });
-    }
-    else {
-        return axios.post("http://" + API_DOMAIN + "/api/posts/" + postStr + "/dislike/", {}, {
-            headers: {Authorization: authStr}
-        }).catch((error) => {
-            console.log(error.response);
-        });
-    }
-}
-
-function deleteLike(authStr, postId, isLike) {
-    const postStr = ''.concat(postId);
-    if (isLike) {
-        return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postStr + "/like/",  {
-            headers: {Authorization: authStr}
-        }).catch((error) => {
-            console.log(error.response);
-        });
-    }
-    else {
-        return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postStr + "/dislike/", {
-            headers: {Authorization: authStr}
-        }).catch((error) => {
-            console.log(error.response);
-        });
-    }
-}
-
-function deletePost(authStr, postId) {
-    const postStr = ''.concat(postId);
-    return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postStr + "/",  {
-        headers: {Authorization: authStr}
-    }).catch((error) => {
-        console.log(error.response);
-    });
-}
+import {
+    getSelfInfo, submitComment, getListOfPosts, deletePost,
+    patchUserInfo, postPost, clickLike, clickDislike, clickComments
+} from './Functions';
 
 function Profile(props) {
     const { token, setToken } = useToken();
@@ -115,7 +33,7 @@ function Profile(props) {
     useEffect(() => {
         const handleSome = async () => {
             setLoading(true);
-            const user = await getUserInfo(authStr);
+            const user = await getSelfInfo(authStr);
             setUser(user);
             setUserInfo(user);
 
@@ -220,79 +138,9 @@ function Profile(props) {
         }
     }
 
-    const clickLike = (postId, index) => {
-        const newPostList = postList.postList;
-
-        if (newPostList[index].stats.has_liked) {
-            deleteLike(authStr, postId, true);
-            newPostList[index].stats.has_liked = false;
-            newPostList[index].stats.likes_count -= 1;
-        }
-        else {
-            if (newPostList[index].stats.has_disliked) {
-                deleteLike(authStr, postId, false);
-                newPostList[index].stats.dislikes_count -= 1;
-                newPostList[index].stats.has_disliked = false;
-            }
-            postLike(authStr, postId, true);
-            newPostList[index].stats.has_liked = true;
-            newPostList[index].stats.likes_count += 1;
-        }
-
-        setPostList({postList: newPostList});
-    }
-
-    const clickDislike = (postId, index) => {
-        const newPostList = postList.postList;
-
-        if (newPostList[index].stats.has_disliked) {
-            deleteLike(authStr, postId, false);
-            newPostList[index].stats.has_disliked = false;
-            newPostList[index].stats.dislikes_count -= 1;
-        }
-        else {
-            if (newPostList[index].stats.has_liked) {
-                deleteLike(authStr, postId, true);
-                newPostList[index].stats.has_liked = false;
-                newPostList[index].stats.likes_count -= 1;
-            }
-            postLike(authStr, postId, false);
-            newPostList[index].stats.has_disliked = true;
-            newPostList[index].stats.dislikes_count += 1;
-        }
-
-        setPostList({postList: newPostList});
-    }
-
-    const clickComments = async (index) => {
-        const newPostList = postList.postList;
-        if (!('comments' in newPostList[index])) {
-            const comments = await getListOfComments(authStr, newPostList[index].id);
-            newPostList[index].comments = comments;
-        }
-        newPostList[index].showComments = ! newPostList[index].showComments;
-        setPostList({postList: newPostList});
-    }
-
     const clickDeletePost = async (postId) => {
         await deletePost(authStr, postId);
         window.location.reload();
-    }
-
-    const handleSubmit = async (e, postId, index) => {
-        e.preventDefault();
-
-        await postComment(authStr,{
-            text: e.target.text.value,
-            post: postId
-        });
-
-        const newPostList = postList.postList;
-        const comments = await getListOfComments(authStr, newPostList[index].id);
-        newPostList[index].comments = comments;
-        newPostList[index].stats.comments_count += 1;
-        setPostList({postList: newPostList});
-        e.target.reset();
     }
 
     return (
@@ -397,19 +245,22 @@ function Profile(props) {
                             <center>
                                 <img src={ post.photo } width={600} alt={"image"}/>
                                 <h3>{post.description}</h3>
-                                <button className="btn btn-secondary" onClick={() => clickLike(post.id, index)}
+                                <button className="btn btn-secondary" onClick={() =>
+                                    clickLike(post.id, index, authStr, postList, setPostList)}
                                         style={{margin: "3px", height: "50px"}}>
                                     <img src={post.stats.has_liked ? likeFull : likeEmpty} alt='like' width={25}
                                          style={{margin: "3px"}}/>
                                     {post.stats.likes_count}
                                 </button>
-                                <button className="btn btn-secondary" onClick={() => clickDislike(post.id, index)}
+                                <button className="btn btn-secondary" onClick={() =>
+                                    clickDislike(post.id, index, authStr, postList, setPostList)}
                                         style={{margin: "3px", height: "50px"}}>
                                     <img src={post.stats.has_disliked ? dislikeFull : dislikeEmpty} alt='dislike' width={25}
                                          style={{margin: "3px"}}/>
                                     {post.stats.dislikes_count}
                                 </button>
-                                <button className="btn btn-secondary" onClick={() => clickComments(index)}
+                                <button className="btn btn-secondary" onClick={() =>
+                                    clickComments(index, authStr, postList, setPostList)}
                                         style={{margin: "3px", height: "50px"}}>
                                     <img src={post.showComments ? commentFull : commentEmpty}
                                          alt='comment' width={25} style={{margin: "3px"}}/>
@@ -428,7 +279,8 @@ function Profile(props) {
                             )) : <div></div>}
                             <div className="list-group-item list-group-item-action">
                                 <form method="post"
-                                      onSubmit={(e) => handleSubmit(e, post.id, index)}>
+                                      onSubmit={(e) =>
+                                          submitComment(e, post.id, index, authStr, postList, setPostList)}>
                                     <div className="form-group">
                                         <input className="form-control" type="text" name="text"
                                                placeholder="Leave your comment" required="required"/>

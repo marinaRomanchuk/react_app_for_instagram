@@ -1,15 +1,6 @@
-import React, {Component, useState} from 'react';
-import axios from "axios";
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {API_DOMAIN} from './PathList';
-
-async function loginUser(credentials) {
-    return axios.post("http://" + API_DOMAIN + "/api/token/", credentials)
-        .then(result => result.data)
-        .catch((error) => {
-            console.log(error.response);
-        });
-}
+import {loginUser} from './Functions';
 
 export default function SignIn({ setToken }) {
     const [username, setUsername] = useState('');
