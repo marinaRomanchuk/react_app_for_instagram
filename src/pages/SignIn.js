@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import {loginUser} from './Functions';
+import {loginUser} from '../lib/api/RequestFunctions';
 
 export default function SignIn({ setToken }) {
     const [username, setUsername] = useState('');

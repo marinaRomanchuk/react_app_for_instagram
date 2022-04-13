@@ -105,72 +105,18 @@ export function deletePost(authStr, postId) {
     });
 }
 
-export function clickLike (postId, index, authStr, postList, setPostList) {
-    const newPostList = postList.postList;
-
-    if (newPostList[index].stats.has_liked) {
-        deleteLike(authStr, postId, true);
-        newPostList[index].stats.has_liked = false;
-        newPostList[index].stats.likes_count -= 1;
-    }
-    else {
-        if (newPostList[index].stats.has_disliked) {
-            deleteLike(authStr, postId, false);
-            newPostList[index].stats.dislikes_count -= 1;
-            newPostList[index].stats.has_disliked = false;
-        }
-        postLike(authStr, postId, true);
-        newPostList[index].stats.has_liked = true;
-        newPostList[index].stats.likes_count += 1;
-    }
-
-    setPostList({postList: newPostList});
-}
-
-export function clickDislike (postId, index, authStr, postList, setPostList) {
-    const newPostList = postList.postList;
-
-    if (newPostList[index].stats.has_disliked) {
-        deleteLike(authStr, postId, false);
-        newPostList[index].stats.has_disliked = false;
-        newPostList[index].stats.dislikes_count -= 1;
-    }
-    else {
-        if (newPostList[index].stats.has_liked) {
-            deleteLike(authStr, postId, true);
-            newPostList[index].stats.has_liked = false;
-            newPostList[index].stats.likes_count -= 1;
-        }
-        postLike(authStr, postId, false);
-        newPostList[index].stats.has_disliked = true;
-        newPostList[index].stats.dislikes_count += 1;
-    }
-
-    setPostList({postList: newPostList});
-}
-
-export async function clickComments (index, authStr, postList, setPostList) {
-    const newPostList = postList.postList;
-    if (!('comments' in newPostList[index])) {
-        const comments = await getListOfComments(authStr, newPostList[index].id);
-        newPostList[index].comments = comments;
-    }
-    newPostList[index].showComments = ! newPostList[index].showComments;
-    setPostList({postList: newPostList});
-}
-
-export async function submitComment (e, postId, index, authStr, postList, setPostList) {
-    e.preventDefault();
-
-    await postComment(authStr,{
-        text: e.target.text.value,
-        post: postId
+export function postFollower(authStr, userId) {
+    return axios.post("http://" + API_DOMAIN + "/api/users/" + userId + "/follow/", {}, {
+        headers: {Authorization: authStr}
+    }).catch((error) => {
+        console.log(error.response);
     });
+}
 
-    const newPostList = postList.postList;
-    const comments = await getListOfComments(authStr, newPostList[index].id);
-    newPostList[index].comments = comments;
-    newPostList[index].stats.comments_count += 1;
-    setPostList({postList: newPostList});
-    e.target.reset();
+export function deleteFollower(authStr, userId) {
+    return axios.delete("http://" + API_DOMAIN + "/api/users/" + userId + "/follow/",  {
+        headers: {Authorization: authStr}
+    }).catch((error) => {
+        console.log(error.response);
+    });
 }
