@@ -27,8 +27,7 @@ export async function getSelfInfo(authStr) {
 }
 
 export async function getUserInfo(authStr, userId) {
-    const userStr = ''.concat(userId);
-    return axios.get("http://" + API_DOMAIN + "/api/users/" + userStr + "/", { headers: { Authorization: authStr }})
+    return axios.get("http://" + API_DOMAIN + "/api/users/" + userId + "/", { headers: { Authorization: authStr }})
         .then(result => result.data);
 }
 
@@ -61,16 +60,15 @@ export function postPost(authStr, credentials) {
 }
 
 export function postLike(authStr, postId, isLike) {
-    const postStr = ''.concat(postId);
     if (isLike) {
-        return axios.post("http://" + API_DOMAIN + "/api/posts/" + postStr + "/like/", {}, {
+        return axios.post("http://" + API_DOMAIN + "/api/posts/" + postId + "/like/", {}, {
             headers: {Authorization: authStr}
         }).catch((error) => {
             console.log(error.response);
         });
     }
     else {
-        return axios.post("http://" + API_DOMAIN + "/api/posts/" + postStr + "/dislike/", {}, {
+        return axios.post("http://" + API_DOMAIN + "/api/posts/" + postId + "/dislike/", {}, {
             headers: {Authorization: authStr}
         }).catch((error) => {
             console.log(error.response);
@@ -79,16 +77,15 @@ export function postLike(authStr, postId, isLike) {
 }
 
 export function deleteLike(authStr, postId, isLike) {
-    const postStr = ''.concat(postId);
     if (isLike) {
-        return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postStr + "/like/",  {
+        return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postId + "/like/",  {
             headers: {Authorization: authStr}
         }).catch((error) => {
             console.log(error.response);
         });
     }
     else {
-        return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postStr + "/dislike/", {
+        return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postId + "/dislike/", {
             headers: {Authorization: authStr}
         }).catch((error) => {
             console.log(error.response);
@@ -97,8 +94,7 @@ export function deleteLike(authStr, postId, isLike) {
 }
 
 export function deletePost(authStr, postId) {
-    const postStr = ''.concat(postId);
-    return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postStr + "/",  {
+    return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postId + "/",  {
         headers: {Authorization: authStr}
     }).catch((error) => {
         console.log(error.response);
