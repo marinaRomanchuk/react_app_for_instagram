@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from "axios";
-import {API_DOMAIN} from './PathList';
+import {API_DOMAIN} from '../lib/api/PathList';
 
 
 class SignUp extends Component {

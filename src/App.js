@@ -1,11 +1,12 @@
 import React, {Component, useState} from 'react';
-import Header from './components/Header';
-import Feed from './components/Feed';
-import SignIn from './components/SignIn';
-import SignUp from './components/SignUp';
-import Profile from './components/Profile';
-import Search from './components/Search';
-import useToken from './components/useToken';
+import Header from './pages/Header';
+import Feed from './pages/Feed';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
+import Profile from './pages/Profile';
+import Search from './pages/Search';
+import User from './pages/User'
+import useToken from './lib/api/useToken';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import "./bootstrap.css";
 
@@ -23,6 +24,7 @@ function App() {
                     <Route path="/signin" element={<SignIn setToken={setToken}/>}/>
                     <Route path="/signup" element={<SignUp/>}/>
                     <Route path="/search" element={<Search/>}/>
+                    <Route path="/user/:id" element={<User/>}/>
                 </Routes>
             </div>
         </BrowserRouter>

@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React from 'react';
 import logo from '../inst_logo.png';
 import "bootstrap/dist/css/bootstrap.css";
 import "../bootstrap.css";
-import useToken from "./useToken";
+import useToken from "../lib/api/useToken";
 
 function Header(props) {
     const { token, setToken } = useToken();
@@ -14,7 +14,7 @@ function Header(props) {
     const logged_out_nav = (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
-                <a className="navbar-brand" href="/">
+                <a className="navbar-brand" href="/src/pages">
                     <img alt="logo" src={logo} width={50}></img>
                     New Instagram
                 </a>
@@ -36,7 +36,7 @@ function Header(props) {
     const logged_in_nav = (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
-                <a className="navbar-brand" href="/">
+                <a className="navbar-brand" href="/src/pages">
                     <img alt="logo" src={logo} width={50}></img>
                     New Instagram
                 </a>
@@ -65,7 +65,7 @@ function Header(props) {
                 <button className="btn btn-outline-dark" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarColor03" aria-controls="navbarColor03"
                         aria-expanded="false">
-                    <a className="nav-link" onClick={logOutClick} href="/">Log out</a>
+                    <a className="nav-link" onClick={logOutClick} href="/src/pages">Log out</a>
                 </button>
             </div>
         </nav>
