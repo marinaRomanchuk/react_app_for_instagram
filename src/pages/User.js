@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import useToken from "../lib/api/useToken";
 import { useParams } from "react-router-dom";
-import {getUserInfo, getListOfPosts} from '../lib/api/RequestFunctions';
-import {comments, newComment, postInfo, userPresentation, postLine, clickFollow} from "../lib/components/Components";
-
+import {getListOfPosts} from '../lib/api/Posts';
+import {getUserInfo} from '../lib/api/Users';
+import {userPresentation, clickFollow} from "../lib/components/Users";
+import {postInfo, postLine} from "../lib/components/Posts";
+import {comments, newComment} from "../lib/components/Comments";
 
 function User(props) {
     const { token, setToken } = useToken();

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import useToken from "../lib/api/useToken";
-import {getFeed} from '../lib/api/RequestFunctions';
-import {newComment, comments, postInfo, postLine} from "../lib/components/Components";
+import {getFeed} from '../lib/api/Posts';
+import {newComment, comments} from "../lib/components/Comments";
+import {postInfo, postLine} from "../lib/components/Posts";
 
 function Feed(props) {
     const { token, setToken } = useToken();

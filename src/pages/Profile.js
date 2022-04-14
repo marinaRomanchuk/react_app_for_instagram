@@ -4,9 +4,14 @@ import useToken from "../lib/api/useToken";
 import basket  from '../basket.png';
 import logo from '../inst_logo.png';
 import {
-    getSelfInfo, getListOfPosts, deletePost, patchUserInfo, postPost
-} from '../lib/api/RequestFunctions';
-import {comments, newComment, postInfo, userPresentation} from "../lib/components/Components";
+    getListOfPosts, deletePost, postPost
+} from '../lib/api/Posts';
+import {
+    getSelfInfo, patchUserInfo
+} from '../lib/api/Users';
+import {userPresentation} from "../lib/components/Users";
+import {comments, newComment} from "../lib/components/Comments";
+import {postInfo} from "../lib/components/Posts";
 import {userEditting, photoAdding} from "../lib/components/Modals";
 
 function Profile(props) {
