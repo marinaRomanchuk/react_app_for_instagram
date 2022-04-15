@@ -40,3 +40,9 @@ export function deleteFollower(authStr, userId) {
         console.log(error.response);
     });
 }
+
+export async function getSearchResults(authStr, searchString) {
+    return axios.get("http://" + API_DOMAIN + "/api/search/", { headers: { Authorization: authStr },
+        params: { search: searchString }})
+        .then(result => result.data);
+}
