@@ -40,7 +40,7 @@ export const comments = (post) => {
     return (
         post.showComments ? post.comments.map(comment => (
             <div class="list-group-item list-group-item-action">
-                <img src={ comment.user_info.profile_photo ? "http://" + API_DOMAIN +
+                <img src={ comment.user_info.profile_photo ?
                     comment.user_info.profile_photo : logo } width={30}
                      style={{display:"inline-block"}}>
                 </img>
