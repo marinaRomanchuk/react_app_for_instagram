@@ -13,13 +13,14 @@ function User(props) {
     const [ postList, setPostList ] = useState([]);
     const [ user, setUser] = useState({});
     const [ loading, setLoading ] = useState(true);
+    const [ notFound, setNotFound ] = useState(false);
     const authStr = 'Token '.concat(token);
     const { id } = useParams();
 
     useEffect(() => {
         const handleSome = async () => {
             setLoading(true);
-            const user = await getUserInfo(authStr, id);
+            const user = await getUserInfo(authStr, id, setNotFound);
             setUser(user);
 
             const posts = await getListOfPosts(authStr, user.id);
@@ -34,8 +35,13 @@ function User(props) {
 
     return (
         <div>
-            {loading && <div>Loading</div>}
-            {!loading && (
+            {loading && <div></div>}
+            {notFound &&
+                <div>
+                    <h2 style={{margin:"20px"}}>Page not found.</h2>
+                </div>
+            }
+            {!loading &&
                 <div class="list-group" style={{maxWidth: "1000px", margin:"0 auto"}}>
                     {userPresentation(user)}
                     <div>
@@ -49,7 +55,7 @@ function User(props) {
                         }</h5>
                     </div>
                     <br></br>
-                    { postList.postList.map((post, index) => (
+                    { postList.postList.length ? postList.postList.map((post, index) => (
                         <div class="list-group-item list-group-item-action flex-column align-items-start">
                             {postLine(post)}
                             <center>
@@ -58,9 +64,9 @@ function User(props) {
                             {comments(post)}
                             {newComment(post, index, authStr, postList, setPostList)}
                         </div>
-                    ))}
+                    )) : <h3>There are no posts on this page yet</h3>}
                 </div>
-            )}
+            }
         </div>
     );
 }

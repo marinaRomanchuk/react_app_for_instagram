@@ -159,7 +159,7 @@ function Profile(props) {
                                 handleSendPostCreation, uploadPostImage)}
                     </div>
                     <br></br>
-                    { postList.postList.map((post, index) => (
+                    { postList.postList.length ? postList.postList.map((post, index) => (
                         <div class="list-group-item list-group-item-action flex-column align-items-start">
                             <div style={{display: "inline-block", width: "100%"}}>
                                 <img src={ post.author.profile_photo ? post.author.profile_photo : logo } width={40}
@@ -177,7 +177,7 @@ function Profile(props) {
                             {comments(post)}
                             {newComment(post, index, authStr, postList, setPostList)}
                         </div>
-                    ))}
+                    )) : <h3>There are no posts yet, create a new one!</h3>}
                 </div>
             )}
         </div>
