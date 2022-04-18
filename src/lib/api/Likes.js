@@ -6,6 +6,7 @@ export function postLike(authStr, postId, isLike) {
         return axios.post("http://" + API_DOMAIN + "/api/posts/" + postId + "/like/", {}, {
             headers: {Authorization: authStr}
         }).catch((error) => {
+            alert(error.response.data.detail);
             console.log(error.response);
         });
     }
@@ -13,6 +14,7 @@ export function postLike(authStr, postId, isLike) {
         return axios.post("http://" + API_DOMAIN + "/api/posts/" + postId + "/dislike/", {}, {
             headers: {Authorization: authStr}
         }).catch((error) => {
+            alert(error.response.data.detail);
             console.log(error.response);
         });
     }
@@ -23,6 +25,7 @@ export function deleteLike(authStr, postId, isLike) {
         return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postId + "/like/",  {
             headers: {Authorization: authStr}
         }).catch((error) => {
+            alert(error.response.data.detail);
             console.log(error.response);
         });
     }
@@ -30,6 +33,7 @@ export function deleteLike(authStr, postId, isLike) {
         return axios.delete("http://" + API_DOMAIN + "/api/posts/" + postId + "/dislike/", {
             headers: {Authorization: authStr}
         }).catch((error) => {
+            alert(error.response.data.detail);
             console.log(error.response);
         });
     }
