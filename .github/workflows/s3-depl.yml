@@ -1,9 +1,7 @@
 name: s3-depl
 
 on:
-  push:
-    branches:
-      - master
+  [push]
 
 jobs:
   build:
