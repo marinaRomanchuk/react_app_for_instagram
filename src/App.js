@@ -13,6 +13,7 @@ import "./bootstrap.css";
 
 function App() {
     const { token, setToken } = useToken();
+    document.title = 'New instagram'
 
     return (
         <BrowserRouter>
